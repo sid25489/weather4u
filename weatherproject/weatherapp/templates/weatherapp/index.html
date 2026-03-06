@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather 4 U</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'weatherapp/styles.css' %}">
+</head>
+
+{% if image_url %}
+
+<body style="background-image: url('{{ image_url }}');">
+    {% else %}
+
+    <body>
+        {% endif %}
+        <div class="overlay"></div>
+        <div class="weather-container">
+
+            <div class="search-box">
+                <form method="POST">
+                    {% csrf_token %}
+                    <i class="fa-solid fa-location-dot"></i>
+                    <input type="text" name="city" placeholder="Enter city name..." value="{{ city|title }}" required
+                        autocomplete="off">
+                    <button type="submit"><i class="fa-solid fa-cloud-arrow-up"></i></button>
+                </form>
+            </div>
+
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    <i class="fa-solid fa-circle-exclamation"></i> {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if error %}
+            <div class="messages">
+                <div class="alert alert-error">
+                    <i class="fa-solid fa-circle-exclamation"></i> {{ error }}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if not exception_occurred and temp %}
+            <div class="weather-info">
+                <h1 class="city">{{ city|title }}</h1>
+                <p class="date">{{ day|date:"l, j F Y" }}</p>
+
+                <div class="weather-main">
+                    <div class="temp-box">
+                        <span class="temp">{{ temp|floatformat:0 }}</span>
+                        <span class="celsius">°C</span>
+                    </div>
+                    <div class="weather-icon">
+                        <img src="http://openweathermap.org/img/wn/{{ icon }}@4x.png" alt="Weather Icon" loading="lazy">
+                        <p class="description">{{ description|title }}</p>
+                    </div>
+                </div>
+
+                <div class="weather-details">
+                    <div class="detail-item">
+                        <i class="fa-solid fa-droplet"></i>
+                        <div class="detail-info">
+                            <span class="detail-value">{{ humidity }}%</span>
+                            <span class="detail-label">Humidity</span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fa-solid fa-wind"></i>
+                        <div class="detail-info">
+                            <span class="detail-value">{{ wind_speed }} m/s</span>
+                            <span class="detail-label">Wind</span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fa-solid fa-temperature-half"></i>
+                        <div class="detail-info">
+                            <span class="detail-value">{{ feels_like|floatformat:1 }}°C</span>
+                            <span class="detail-label">Feels Like</span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fa-solid fa-gauge-high"></i>
+                        <div class="detail-info">
+                            <span class="detail-value">{{ pressure }} hPa</span>
+                            <span class="detail-label">Pressure</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </body>
+
+</html>

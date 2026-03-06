@@ -1,0 +1,1 @@
+import requests; r = requests.get('https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=tokyo%20landmark&utf8=&format=json', headers={'User-Agent': 'WeatherApp4U/1.0'}); print(r.json())
